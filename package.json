@@ -5,17 +5,21 @@
   "main": "index.js",
   "type": "module",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "nodemon server.js"
   },
   "keywords": [],
-  "author": "",
+  "author": "Ricardo Ferreira",
   "license": "ISC",
   "devDependencies": {
     "nodemon": "^3.1.14",
     "standard": "17.1.2"
   },
   "dependencies": {
-    "express": "5.2.1"
+    "dotenv": "17.3.1",
+    "express": "5.2.1",
+    "morgan": "1.10.1",
+    "socket.io": "4.8.3"
   },
   "eslintConfig": {
     "extends": "standard"
