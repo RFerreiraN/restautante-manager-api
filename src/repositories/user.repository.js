@@ -12,4 +12,8 @@ export class UserRepository {
   static createUser(userData) {
     return User.create(userData)
   }
+
+  static updateRefreshToken(id, refreshToken) {
+    return User.findByIdAndUpdate(id, { refreshToken }, { new: true })
+  }
 }
