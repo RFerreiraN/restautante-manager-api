@@ -1,5 +1,6 @@
 import { UserRepository } from '../repositories/user.repository.js'
 import { hashPassword } from '../utils/hash.js'
+import jwt from 'jsonwebtoken'
 
 export async function registerUser(data) {
   const { nombre, email, password } = data
@@ -24,4 +25,16 @@ export async function registerUser(data) {
     email: newUser.email,
     role: newUser.role
   }
+}
+
+export async function refreshUserSession(refreshToken) {
+  const decoded = jwt.verify(refreshToken, process.env.SECRET_REFRESH_JWT_KEY)
+  const userId = decoded.id
+
+  const user = await UserRepository.findUserById(userId)
+  if (!user) {
+    throw new Error('User Not Exists')
+  }
+
+
 }
