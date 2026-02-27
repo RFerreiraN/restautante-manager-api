@@ -6,7 +6,6 @@ export async function loginUser(data) {
   const { email, password } = data
 
   const user = await UserRepository.findUserByEmail(email)
-
   if (!user) {
     throw new Error('Invalid Credentials')
   }
@@ -34,9 +33,13 @@ export async function loginUser(data) {
   await UserRepository.updateRefreshToken(user._id, refreshToken)
 
   return {
-    id: user._id,
-    nombre: user.nombre,
-    email: user.email,
-    role: user.role
+    user: {
+      id: user._id,
+      nombre: user.nombre,
+      email: user.email,
+      role: user.role
+    },
+    token,
+    refreshToken
   }
 }

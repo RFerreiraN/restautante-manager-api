@@ -35,6 +35,4 @@ export async function refreshUserSession(refreshToken) {
   if (!user) {
     throw new Error('User Not Exists')
   }
-
-
 }
