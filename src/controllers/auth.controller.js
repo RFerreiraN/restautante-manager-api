@@ -1,5 +1,5 @@
 import { validateUser } from '../utils/validator/auth.validators.js'
-import { registerUser } from '../services/auth.service.js'
+import { refreshUserSession, registerUser } from '../services/auth.service.js'
 import { loginUser } from '../services/login.service.js'
 
 export class ControllerAuth {
@@ -19,28 +19,30 @@ export class ControllerAuth {
 
   static async login(req, res) {
     try {
-      const { user, token, refreshToken } = await loginUser(req.body)
+      const { user, accessToken, refreshToken } = await loginUser(req.body)
       return res
-        .cookie('access_token', token, {
-          httpOnly: true,
-          secure: process.env.NODE_ENV === 'production',
-          maxAge: 1000 * 60 * 15
-        })
         .cookie('refresh_token', refreshToken, {
           httpOnly: true,
           secure: process.env.NODE_ENV === 'production',
           maxAge: 1000 * 60 * 60 * 24 * 7
         })
-        .status(200).json(user)
+        .status(200).json({ user, accessToken })
     } catch (error) {
-
+      return res.status(401).json({ error: error.message })
     }
   }
 
   static async refresh(req, res) {
-    const refreshToken = req.cookies.refresh_Token
+    const refreshToken = req.cookies.refresh_token
     if (!refreshToken) {
       return res.status(401).json({ message: 'Not Exists' })
+    }
+
+    try {
+      const { accessToken } = await refreshUserSession(refreshToken)
+      return res.status(200).json({ accessToken })
+    } catch (error) {
+      return res.status(403).json({ message: error.message })
     }
   }
 }

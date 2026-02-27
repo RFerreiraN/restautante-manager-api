@@ -15,7 +15,7 @@ export async function loginUser(data) {
     throw new Error('Invalid Credentials')
   }
 
-  const token = jwt.sign(
+  const accessToken = jwt.sign(
     {
       id: user._id,
       role: user.role
@@ -39,7 +39,7 @@ export async function loginUser(data) {
       email: user.email,
       role: user.role
     },
-    token,
+    accessToken,
     refreshToken
   }
 }

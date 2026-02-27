@@ -28,11 +28,29 @@ export async function registerUser(data) {
 }
 
 export async function refreshUserSession(refreshToken) {
-  const decoded = jwt.verify(refreshToken, process.env.SECRET_REFRESH_JWT_KEY)
-  const userId = decoded.id
+  try {
+    const decoded = jwt.verify(refreshToken, process.env.SECRET_REFRESH_JWT_KEY)
 
-  const user = await UserRepository.findUserById(userId)
-  if (!user) {
-    throw new Error('User Not Exists')
+    const user = await UserRepository.findUserById(decoded.id)
+    if (!user) {
+      throw new Error('User Not Exists')
+    }
+
+    if (user.refreshToken !== refreshToken) {
+      throw new Error('Invalid Refresh Token')
+    }
+
+    const newAccessToken = jwt.sign(
+      {
+        id: user._id,
+        role: user.role
+      },
+      process.env.SECRET_JWT_KEY,
+      { expiresIn: '15m' }
+    )
+
+    return { accessToken: newAccessToken }
+  } catch (error) {
+    throw new Error('Refresh Token invalid or expired')
   }
 }
