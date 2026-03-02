@@ -1,0 +1,27 @@
+import { configDotenv } from 'dotenv'
+import { createServer } from 'node:http'
+import { Server } from 'socket.io'
+import express from 'express'
+import logger from 'morgan'
+import cookieParser from 'cookie-parser'
+import cors from 'cors'
+
+configDotenv()
+
+const PORT = process.env.PORT ?? 3000
+const app = express()
+const server = createServer(app)
+const io = new Server(server)
+
+app.use(logger('dev'))
+app.use(express.json())
+app.use(cookieParser())
+app.use(cors())
+
+app.get('/', (req, res) => {
+  res.send('Holis')
+})
+
+server.listen(PORT, () => {
+  console.log(`Server Listening on port: http://localhost:${PORT}`)
+})
