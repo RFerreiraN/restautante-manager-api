@@ -16,4 +16,8 @@ export class UserRepository {
   static async findAndUpdateRefreshToken(id) {
     return await User.findByIdAndUpdate(id, { refreshToken: null })
   }
+
+  static async findById(id) {
+    return await User.findById(id)
+  }
 }
