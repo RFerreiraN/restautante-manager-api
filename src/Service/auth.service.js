@@ -43,8 +43,23 @@ export class AuthService {
     }
   }
 
-  static async refreshUserSession(token) {
+  static async refreshUserSession(refreshToken) {
+    const decoded = jwt.verify(refreshToken, process.env.JWT_REFRESH_SECRET)
+    if (!decoded) {
+      throw new Error('Token invalid ot expired')
+    }
 
+    const user = await UserRepository.findByToken(refreshToken)
+    if (!user) {
+      throw new Error('Token Invalid')
+    }
+
+    const newAccessToken = jwt.sign(
+      { id: decoded.id },
+      process.env.JWT_ACCESS_SECRET,
+      { expiresIn: '15m' }
+    )
+    return { accessToken: newAccessToken }
   }
 
   static async logoutUser(id) {
