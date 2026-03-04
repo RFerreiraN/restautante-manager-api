@@ -16,4 +16,21 @@ export class AuthController {
       return res.status(401).json({ message: error.message })
     }
   }
+
+  static async logout(req, res) {
+    try {
+      const { id } = req.user
+      await AuthService.logoutUser(id)
+      res.clearCookie('refresh_token',
+        {
+          httpOnly: true,
+          secure: process.env.NODE_ENV === 'production',
+          sameSite: 'strict'
+        }
+      )
+      res.status(200).json({ message: 'Session Closed' })
+    } catch (error) {
+      return res.status(400).json({ message: error.message })
+    }
+  }
 }

@@ -13,8 +13,8 @@ export class UserRepository {
     return await User.findOne({ refreshToken })
   }
 
-  static async findAndUpdateRefreshToken(id) {
-    return await User.findByIdAndUpdate(id, { refreshToken: null })
+  static async findAndUpdateRefreshToken(id, refreshToken) {
+    return await User.findByIdAndUpdate(id, { refreshToken })
   }
 
   static async findById(id) {

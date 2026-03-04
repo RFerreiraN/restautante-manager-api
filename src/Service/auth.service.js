@@ -63,6 +63,16 @@ export class AuthService {
   }
 
   static async logoutUser(id) {
+    const user = await UserRepository.findById(id)
+    if (!user) {
+      throw new Error('User not exists')
+    }
 
+    await UserRepository.findAndUpdateRefreshToken(user._id, null)
+
+    return {
+      success: true,
+      message: 'Session Closed successfully'
+    }
   }
 }
