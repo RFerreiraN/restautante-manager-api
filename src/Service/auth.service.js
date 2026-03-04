@@ -4,7 +4,20 @@ import { comparePassword } from '../utils/hash.js'
 
 export class AuthService {
   static async registerUser(data) {
-    return await UserRepository.register(data)
+    const existingUser = await UserRepository.findByEmail(data.email)
+    if (existingUser) {
+      throw new Error('Email ready exists')
+    }
+    const user = await UserRepository.register(data)
+
+    return {
+      user: {
+        id: user._id,
+        nombre: user.nombre,
+        email: user.email,
+        role: user.role
+      }
+    }
   }
 
   static async loginUser(email, password) {
@@ -45,9 +58,6 @@ export class AuthService {
 
   static async refreshUserSession(refreshToken) {
     const decoded = jwt.verify(refreshToken, process.env.JWT_REFRESH_SECRET)
-    if (!decoded) {
-      throw new Error('Token invalid ot expired')
-    }
 
     const user = await UserRepository.findByToken(refreshToken)
     if (!user) {

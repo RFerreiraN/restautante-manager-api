@@ -1,8 +1,8 @@
 import { User } from '../Models/user.model.js'
 
 export class UserRepository {
-  static async register(Data) {
-    return await User.create(Data)
+  static async register(data) {
+    return await User.create(data)
   }
 
   static async findByEmail(email) {

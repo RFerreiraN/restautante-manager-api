@@ -42,6 +42,19 @@ export class AuthController {
     }
   }
 
+  static async refresh(req, res) {
+    try {
+      const refreshToken = req.cookies.refresh_token
+      if (!refreshToken) {
+        return res.status(401).json({ message: 'Invalid Token' })
+      }
+      const { accessToken } = await AuthService.refreshUserSession(refreshToken)
+      return res.status(200).json({ accessToken })
+    } catch (error) {
+      return res.status(401).json({ message: error.message })
+    }
+  }
+
   static async logout(req, res) {
     try {
       const { id } = req.user
