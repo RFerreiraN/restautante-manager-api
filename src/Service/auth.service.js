@@ -4,7 +4,6 @@ import { comparePassword } from '../utils/hash.js'
 
 export class AuthService {
   static async registerUser(data) {
-    const { email, password } = data
     return await UserRepository.register(data)
   }
 
@@ -36,7 +35,8 @@ export class AuthService {
       user: {
         id: user._id,
         nombre: user.nombre,
-        email: user.email
+        email: user.email,
+        role: user.role
       },
       token,
       refreshToken

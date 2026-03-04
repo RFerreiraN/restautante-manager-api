@@ -1,10 +1,35 @@
 import { AuthService } from '../Service/auth.service.js'
+import { hashPassword } from '../utils/hash.js'
+import { validateAuthLogin, validateAuthRegister } from '../utils/Validations/auth.validator.js'
 
 export class AuthController {
+  static async register(req, res) {
+    const results = validateAuthRegister(req.body)
+    if (results.error) {
+      return res.status(400).json({ message: results.error.errors[0].message })
+    }
+
+    const user = results.data
+
+    const hashedPassword = hashPassword(user.password)
+    user.password = hashedPassword
+
+    await AuthService.registerUser(user)
+    return res.json({
+      user: {
+        nombre: user.nombre,
+        email: user.email
+      }
+    })
+  }
+
   static async login(req, res) {
     try {
-      const { email, password } = req.body
-      const { user, token, refreshToken } = await AuthService.loginUser(email, password)
+      const results = validateAuthLogin(req.body)
+      if (results.error) {
+        return res.status(400).json({ error: results.error.errors[0].message })
+      }
+      const { user, token, refreshToken } = await AuthService.loginUser(results.data)
       res.cookie('refresh_token', refreshToken, {
         httpOnly: true,
         secure: process.env.NODE_ENV === 'production',
@@ -28,7 +53,7 @@ export class AuthController {
           sameSite: 'strict'
         }
       )
-      res.status(200).json({ message: 'Session Closed' })
+      return res.status(200).json({ message: 'Session Closed' })
     } catch (error) {
       return res.status(400).json({ message: error.message })
     }
