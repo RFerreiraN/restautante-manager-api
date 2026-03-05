@@ -11,7 +11,7 @@ export class AuthController {
 
     const user = results.data
 
-    const hashedPassword = hashPassword(user.password)
+    const hashedPassword = await hashPassword(user.password)
     user.password = hashedPassword
 
     await AuthService.registerUser(user)

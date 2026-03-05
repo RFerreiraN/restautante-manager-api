@@ -1,11 +1,12 @@
-import { configDotenv } from 'dotenv'
-import { createServer } from 'node:http'
-import { Server } from 'socket.io'
 import express from 'express'
 import logger from 'morgan'
 import cookieParser from 'cookie-parser'
 import cors from 'cors'
 import { connectDb } from './src/Config/database.js'
+import { configDotenv } from 'dotenv'
+import { createServer } from 'node:http'
+import { Server } from 'socket.io'
+import authRoutes from './src/Routes/auth.routes.js'
 
 configDotenv()
 
@@ -23,6 +24,8 @@ app.use(cors())
 app.get('/', (req, res) => {
   res.send('Holis')
 })
+
+app.use('/auth', authRoutes)
 
 server.listen(PORT, () => {
   console.log(`Server Listening on port: http://localhost:${PORT}`)
