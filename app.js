@@ -5,11 +5,13 @@ import express from 'express'
 import logger from 'morgan'
 import cookieParser from 'cookie-parser'
 import cors from 'cors'
+import { connectDb } from './src/Config/database.js'
 
 configDotenv()
 
 const PORT = process.env.PORT ?? 3000
 const app = express()
+await connectDb()
 const server = createServer(app)
 const io = new Server(server)
 
