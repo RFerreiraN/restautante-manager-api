@@ -4,4 +4,6 @@ import { ProfileController } from '../Controller/profile.controller.js'
 
 const router = Router()
 
-router.get('/profile', authMiddleware, ProfileController.getProfile)
+router.get('/', authMiddleware, ProfileController.getProfile)
+
+export default router

@@ -7,6 +7,7 @@ import { configDotenv } from 'dotenv'
 import { createServer } from 'node:http'
 import { Server } from 'socket.io'
 import authRoutes from './src/Routes/auth.routes.js'
+import profileRoutes from './src/Routes/profile.routes.js'
 
 configDotenv()
 
@@ -26,6 +27,7 @@ app.get('/', (req, res) => {
 })
 
 app.use('/auth', authRoutes)
+app.use('/profile', profileRoutes)
 
 server.listen(PORT, () => {
   console.log(`Server Listening on port: http://localhost:${PORT}`)

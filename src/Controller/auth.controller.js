@@ -29,7 +29,8 @@ export class AuthController {
       if (results.error) {
         return res.status(400).json({ error: results.error.errors[0].message })
       }
-      const { user, token, refreshToken } = await AuthService.loginUser(results.data)
+      const { email, password } = results.data
+      const { user, token, refreshToken } = await AuthService.loginUser(email, password)
       res.cookie('refresh_token', refreshToken, {
         httpOnly: true,
         secure: process.env.NODE_ENV === 'production',
