@@ -21,6 +21,6 @@ const UserSchema = new mongoose.Schema({
     type: String,
     default: 'waiter'
   }
-})
+}, { timestamps: true })
 
 export const User = mongoose.model('user', UserSchema)

@@ -1,0 +1,23 @@
+import { ProductRepository } from '../Repository/product.repository.js'
+
+export class ProductService {
+  static async createProduct(data) {
+    const { price, nombre } = data
+    if (price < 0) {
+      throw new Error('Price most be a positive number')
+    }
+    if (nombre.trim() === '') {
+      throw new Error('Invalid Name')
+    }
+
+    const product = await ProductRepository.createProduct(data)
+
+    return {
+      product: {
+        nombre: product.nombre,
+        price: product.price,
+        description: product.description
+      }
+    }
+  }
+}
