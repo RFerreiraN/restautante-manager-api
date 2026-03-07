@@ -20,4 +20,14 @@ export class ProductService {
       }
     }
   }
+
+  static async getAllProducts() {
+    const products = await ProductRepository.getAllProducts()
+
+    if (!products) {
+      throw new Error('List Product empty')
+    }
+
+    return products
+  }
 }
