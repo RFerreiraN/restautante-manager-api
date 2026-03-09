@@ -23,9 +23,14 @@ export class ProductService {
 
   static async getAllProducts() {
     const products = await ProductRepository.getAllProducts()
-
-
-
     return products
+  }
+
+  static async getProductById(id) {
+    const product = await ProductRepository.getProductById(id)
+    if (!product) {
+      throw new Error('Product not found')
+    }
+    return product
   }
 }
