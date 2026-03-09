@@ -11,3 +11,7 @@ const productSchema = z.object({
 export function validateProduct(object) {
   return productSchema.safeParse(object)
 }
+
+export function validatePartialProduct(object) {
+  return productSchema.partial().safeParse(object)
+}

@@ -1,5 +1,5 @@
 import { ProductService } from '../Service/product.service.js'
-import { validateProduct } from '../utils/Validations/product.validator.js'
+import { validatePartialProduct, validateProduct } from '../utils/Validations/product.validator.js'
 
 export class ProductController {
   static async createProduct(req, res) {
@@ -29,6 +29,21 @@ export class ProductController {
     const { id } = req.params
     try {
       const product = await ProductService.getProductById(id)
+      return res.status(200).json(product)
+    } catch (error) {
+      return res.status(500).json({ message: 'Error Server' })
+    }
+  }
+
+  static async updateProduct(req, res) {
+    const results = validatePartialProduct(req.body)
+    if (!results.success) {
+      return res.status(400).json({ message: results.error.message })
+    }
+
+    const { id } = req.params
+    try {
+      const product = await ProductService.updateProduct(id, results.data)
       return res.status(200).json(product)
     } catch (error) {
       return res.status(404).json({ message: 'Product not found' })

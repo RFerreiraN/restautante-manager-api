@@ -33,4 +33,12 @@ export class ProductService {
     }
     return product
   }
+
+  static async updateProduct(id, data) {
+    const product = await ProductRepository.updateProduct(id, data)
+    if (!product) {
+      throw new Error('Product not found')
+    }
+    return product
+  }
 }
