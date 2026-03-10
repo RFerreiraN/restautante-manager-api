@@ -26,6 +26,11 @@ export class ProductService {
     return products
   }
 
+  static async getAvailableProducts() {
+    const products = await ProductRepository.getAvailableProducts()
+    return products
+  }
+
   static async getProductById(id) {
     const product = await ProductRepository.getProductById(id)
     if (!product) {

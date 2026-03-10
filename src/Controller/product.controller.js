@@ -21,6 +21,15 @@ export class ProductController {
       const products = await ProductService.getAllProducts()
       return res.status(200).json(products)
     } catch (error) {
+      return res.status(500).json({ message: 'Error Server' })
+    }
+  }
+
+  static async getAvailableProducts(req, res) {
+    try {
+      const products = await ProductService.getAvailableProducts()
+      return res.status(200).json(products)
+    } catch (error) {
       return res.status(404).json({ message: 'Products not found' })
     }
   }

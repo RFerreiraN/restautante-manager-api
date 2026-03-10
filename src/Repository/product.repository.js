@@ -6,6 +6,10 @@ export class ProductRepository {
   }
 
   static async getAllProducts() {
+    return await Product.find()
+  }
+
+  static async getAvailableProducts() {
     return await Product.find({ available: true })
   }
 
