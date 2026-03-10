@@ -6,7 +6,7 @@ export class ProductRepository {
   }
 
   static async getAllProducts() {
-    return await Product.find()
+    return await Product.find({ available: true })
   }
 
   static async getProductById(id) {
@@ -17,7 +17,15 @@ export class ProductRepository {
     return await Product.findByIdAndUpdate(id, updatingProduct, { new: true })
   }
 
-  static async deleteProduct(id) {
-    return await Product.findByIdAndDelete(id)
+  static async disableProduct(id) {
+    return await Product.findByIdAndUpdate(
+      id,
+      { available: false },
+      { new: true }
+    )
+  }
+
+  static async updateAvailability(id, available) {
+    return await Product.findByIdAndUpdate(id, { available }, { new: true })
   }
 }

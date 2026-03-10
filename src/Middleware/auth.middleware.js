@@ -10,7 +10,13 @@ export async function authMiddleware(req, res, next) {
   try {
     const decoded = jwt.verify(token, process.env.JWT_ACCESS_SECRET)
     const user = await UserRepository.findById(decoded.id)
-    req.user = user
+    if (!user) {
+      return res.status(401).json({ message: 'Unauthorized' })
+    }
+    req.user = {
+      id: user._id,
+      role: user.role
+    }
     return next()
   } catch (error) {
     return res.status(403).json({ message: 'Token invalido o expirado' })

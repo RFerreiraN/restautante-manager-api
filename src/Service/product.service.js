@@ -41,4 +41,21 @@ export class ProductService {
     }
     return product
   }
+
+  static async disableProduct(id) {
+    const product = await ProductRepository.disableProduct(id)
+    if (!product) {
+      throw new Error('Product not found')
+    }
+    return product
+  }
+
+  static async updateAvailability(id, available) {
+    const product = await ProductRepository.updateAvailability(id, available)
+    if (!product) {
+      throw new Error('Product not found')
+    }
+
+    return product
+  }
 }
