@@ -5,12 +5,12 @@ import { roleMiddleware } from '../Middleware/role.middleware.js'
 
 const router = Router()
 
-router.post('/', authMiddleware, ProductController.createProduct)
-router.get('/', authMiddleware, ProductController.getAvailableProducts)
 router.get('/admin', authMiddleware, roleMiddleware(['admin']), ProductController.getAllProducts)
+router.get('/', authMiddleware, ProductController.getAvailableProducts)
 router.get('/:id', authMiddleware, ProductController.getProductById)
-router.patch('/:id', authMiddleware, ProductController.updateProduct)
+router.post('/', authMiddleware, roleMiddleware(['admin']), ProductController.createProduct)
+router.patch('/:id', authMiddleware, roleMiddleware(['admin']), ProductController.updateProduct)
 router.patch('/:id/availability', authMiddleware, roleMiddleware(['admin']), ProductController.updateAvailability)
-router.delete('/:id', authMiddleware, ProductController.disableProduct)
+router.delete('/:id', authMiddleware, roleMiddleware(['admin']), ProductController.disableProduct)
 
 export default router

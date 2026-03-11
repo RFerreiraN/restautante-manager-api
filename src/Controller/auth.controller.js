@@ -6,7 +6,7 @@ export class AuthController {
   static async register(req, res) {
     const results = validateAuthRegister(req.body)
     if (results.error) {
-      return res.status(400).json({ message: results.error.errors[0].message })
+      return res.status(400).json({ message: JSON.parse(results.error.message) })
     }
 
     const user = results.data
@@ -27,7 +27,7 @@ export class AuthController {
     try {
       const results = validateAuthLogin(req.body)
       if (results.error) {
-        return res.status(400).json({ error: results.error.errors[0].message })
+        return res.status(400).json({ message: JSON.parse(results.error.message) })
       }
       const { email, password } = results.data
       const { user, token, refreshToken } = await AuthService.loginUser(email, password)
