@@ -55,4 +55,8 @@ export class OrderController {
       return res.status(400).json({ message: error.message })
     }
   }
+
+  static async getOrdersByTable(req, res) {
+
+  }
 }
