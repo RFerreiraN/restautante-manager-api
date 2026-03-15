@@ -57,12 +57,36 @@ export class OrderController {
   }
 
   static async getOrdersByTable(req, res) {
-    const { id } = req.params
+    const { tableId } = req.params
     try {
-      const table = await OrderService.getOrdersByTable(id)
-      return res.status(200).json(table)
+      const orders = await OrderService.getOrdersByTable(tableId)
+      return res.status(200).json(orders)
     } catch (error) {
       return res.status(404).json({ message: error.message })
+    }
+  }
+
+  static async getOrdersByUser(req, res) {
+    const { id } = req.user
+    try {
+      const orderByUser = await OrderService.getOrdersByUser(id)
+      return res.status(200).json(orderByUser)
+    } catch (error) {
+      return res.status(404).json({ message: error.message })
+    }
+  }
+
+  static async updateOrder(req, res) {
+    const results = validatePartialOrder(req.body)
+    if (!results.success) {
+      return res.status(400).json({ message: JSON.parse(results.error.message) })
+    }
+    const { id } = req.params
+    try {
+      const modifyOrder = await OrderService.updateOrder(id, results.data)
+      return res.status(200).json(modifyOrder)
+    } catch (error) {
+      return res.status(400).json({ message: error.message })
     }
   }
 }
