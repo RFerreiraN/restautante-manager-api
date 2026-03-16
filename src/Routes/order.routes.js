@@ -6,7 +6,7 @@ import { roleMiddleware } from '../Middleware/role.middleware.js'
 const router = Router()
 
 router.get('/admin', authMiddleware, roleMiddleware(['admin']), OrderController.getAllOrders)
-router.get('my-orders', authMiddleware, OrderController.getOrdersByUser)
+router.get('/my-orders', authMiddleware, OrderController.getOrdersByUser)
 router.post('/', authMiddleware, OrderController.createOrder)
 router.get('/table/:tableId', authMiddleware, OrderController.getOrdersByTable)
 router.get('/:id', authMiddleware, OrderController.getOrderById)
