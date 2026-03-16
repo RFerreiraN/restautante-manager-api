@@ -16,3 +16,15 @@ export function validateOrder(object) {
 export function validatePartialOrder(object) {
   return orderSchema.partial().safeParse(object)
 }
+
+const orderStatusSchema = z.object({
+  user: z.string().min(1, { message: 'ID user required' }).optional(),
+  items: z.array(z.object({ product: z.string().min(1), quantity: z.number().int().positive().min(1) })).min(1),
+  table: z.string().min(1),
+  total: z.number().positive().optional(),
+  observations: z.string().optional()
+})
+
+export function validateWithOutStatus(object) {
+  return orderStatusSchema.safeParse(object)
+}

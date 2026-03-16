@@ -1,5 +1,5 @@
 import { OrderService } from '../Service/order.service.js'
-import { validateOrder, validatePartialOrder } from '../utils/Validations/order.validator.js'
+import { validateOrder, validatePartialOrder, validateWithOutStatus } from '../utils/Validations/order.validator.js'
 
 export class OrderController {
   static async createOrder(req, res) {
@@ -41,7 +41,7 @@ export class OrderController {
   }
 
   static async updateStatus(req, res) {
-    const results = validatePartialOrder(req.body)
+    const results = validateWithOutStatus(req.body)
     if (!results.success) {
       return res.status(400).json({ message: JSON.parse(results.error.message) })
     }
