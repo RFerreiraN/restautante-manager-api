@@ -1,4 +1,4 @@
-import { OrderService } from '../Service/order.service'
+import { OrderService } from '../Service/order.service.js'
 import { validateOrder, validatePartialOrder } from '../utils/Validations/order.validator.js'
 
 export class OrderController {
