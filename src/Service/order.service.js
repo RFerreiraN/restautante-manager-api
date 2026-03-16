@@ -1,3 +1,4 @@
+import { Order } from '../Models/order.model.js'
 import { OrderRepository } from '../Repository/order.repository.js'
 import { ProductRepository } from '../Repository/product.repository.js'
 
@@ -35,12 +36,17 @@ export class OrderService {
     return order
   }
 
-  static async updateStatus(id, status) {
-    const statusOrder = await OrderRepository.updateStatus(id, status)
-    if (!statusOrder) {
-      throw new Error('Order not found')
+  static async updateStatus(id, status, userRole) {
+    const order = await OrderRepository.getOrderById(id)
+    if (order.status === 'cancelled' || order.status === 'paid') {
+      throw new Error('Cant modify Order')
     }
-    return statusOrder
+
+    if (status === 'cancelled' && userRole !== 'admin') {
+      throw new Error('Not authorized')
+    }
+    const orderStatus = await OrderRepository.updateStatus(id, status)
+    return orderStatus
   }
 
   static async getOrdersByTable(tableId) {

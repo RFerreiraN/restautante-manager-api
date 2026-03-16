@@ -47,9 +47,10 @@ export class OrderController {
     }
     const { id } = req.params
     const { status } = results.data
+    const { role } = req.user
 
     try {
-      const orderStatus = await OrderService.updateStatus(id, status)
+      const orderStatus = await OrderService.updateStatus(id, status, role)
       return res.status(200).json(orderStatus)
     } catch (error) {
       return res.status(400).json({ message: error.message })
