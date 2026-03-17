@@ -9,7 +9,7 @@ export class TableRepository {
     return Table.findByIdAndUpdate(id, data, { new: true })
   }
 
-  static disableTable(id) {
+  static disabledTable(id) {
     return Table.findByIdAndUpdate(id, { status: 'disabled' }, { new: true })
   }
 
@@ -21,8 +21,12 @@ export class TableRepository {
     return Table.findById(id)
   }
 
-  static getTableByStatus(status) {
-    return Table.find({ status })
+  static getTableByNumber(number) {
+    return Table.findOne({ number })
+  }
+
+  static getAvailableTables() {
+    return Table.find({ status: 'free' })
   }
 
   static changeStatusTable(id, status) {
