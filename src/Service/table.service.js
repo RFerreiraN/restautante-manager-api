@@ -22,7 +22,7 @@ export class TableService {
   }
 
   static async disabledTable(id) {
-    const table = await TableRepository.disableTable(id)
+    const table = await TableRepository.disabledTable(id)
     if (!table) {
       throw new Error('Table Not Exists')
     }
