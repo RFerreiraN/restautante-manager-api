@@ -8,12 +8,14 @@ const tableSchema = new mongoose.Schema({
   },
 
   capacity: {
-    type: Number
+    type: Number,
+    default: 1
   },
 
   status: {
     type: String,
-    enum: ['free', 'occupied', 'reserved'],
+    enum: ['free', 'occupied', 'reserved', 'disabled'],
+    default: 'free',
     required: true
   }
 }, { timestamps: true })
