@@ -36,13 +36,18 @@ export class OrderService {
     return order
   }
 
-  static async updateStatus(id, status, userRole) {
+  static async updateStatus(id, status, role) {
     const order = await OrderRepository.getOrderById(id)
+
+    if (!order) {
+      throw new Error('Order Not Found')
+    }
+
     if (order.status === 'cancelled' || order.status === 'paid') {
       throw new Error('Cant modify Order')
     }
 
-    if (status === 'cancelled' && userRole !== 'admin') {
+    if (status === 'cancelled' && role !== 'admin') {
       throw new Error('Not authorized')
     }
     const orderStatus = await OrderRepository.updateStatus(id, status)

@@ -13,11 +13,7 @@ export function validateOrder(object) {
   return orderSchema.safeParse(object)
 }
 
-export function validatePartialOrder(object) {
-  return orderSchema.partial().safeParse(object)
-}
-
-const orderStatusSchema = z.object({
+const orderWithOutStatusSchema = z.object({
   user: z.string().min(1, { message: 'ID user required' }).optional(),
   items: z.array(z.object({ product: z.string().min(1), quantity: z.number().int().positive().min(1) })).min(1),
   table: z.string().min(1),
@@ -26,5 +22,13 @@ const orderStatusSchema = z.object({
 })
 
 export function validateWithOutStatus(object) {
-  return orderStatusSchema.safeParse(object)
+  return orderWithOutStatusSchema.partial().safeParse(object)
+}
+
+const changeStatusSchema = z.object({
+  status: z.enum(['pending', 'preparing', 'ready', 'delivered', 'cancelled', 'paid'])
+})
+
+export function validateStatusSchema(object) {
+  return changeStatusSchema.safeParse(object)
 }
