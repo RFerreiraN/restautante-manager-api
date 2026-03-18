@@ -11,6 +11,7 @@ import profileRoutes from './src/Routes/profile.routes.js'
 import productsRoutes from './src/Routes/product.routes.js'
 import ordersRoutes from './src/Routes/order.routes.js'
 import tablesRoutes from './src/Routes/table.routes.js'
+import jwt from 'jsonwebtoken'
 
 configDotenv()
 
@@ -26,12 +27,23 @@ export const io = new Server(server, {
   }
 })
 
+io.use((socket, next) => {
+  const token = socket.handshake.auth.token
+  if (!token) {
+    return next(new Error('User not authorized'))
+  }
+
+  try {
+    const user = jwt.verify(token, process.env.JWT_ACCESS_SECRET)
+    socket.user = user
+  } catch (error) {
+    next(new Error('Token Inválido'))
+  }
+  next()
+})
+
 io.on('connection', async (socket) => {
-  console.log('Conectado', socket.id)
-
-  io.use((socket, next) => {
-
-  })
+  console.log('Conectado', socket.user.id)
 
   socket.on('disconnect', () => {
     console.log('Desconectado')
