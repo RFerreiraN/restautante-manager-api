@@ -18,7 +18,13 @@ const PORT = process.env.PORT ?? 3000
 const app = express()
 await connectDb()
 const server = createServer(app)
-const io = new Server(server)
+export const io = new Server(server, {
+  connectionStateRecovery: true
+})
+
+io.on('connection', async (socket) => {
+  console.log('Conectado')
+})
 
 app.use(logger('dev'))
 app.use(express.json())
