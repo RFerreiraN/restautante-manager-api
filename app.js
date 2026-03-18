@@ -19,11 +19,23 @@ const app = express()
 await connectDb()
 const server = createServer(app)
 export const io = new Server(server, {
-  connectionStateRecovery: true
+  connectionStateRecovery: true,
+  cors: {
+    origin: 'http://localhost:4200',
+    methods: ['GET', 'POST']
+  }
 })
 
 io.on('connection', async (socket) => {
-  console.log('Conectado')
+  console.log('Conectado', socket.id)
+
+  io.use((socket, next) => {
+
+  })
+
+  socket.on('disconnect', () => {
+    console.log('Desconectado')
+  })
 })
 
 app.use(logger('dev'))
