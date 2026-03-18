@@ -29,7 +29,8 @@ const orderSchema = new mongoose.Schema({
 
   table: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: 'table'
+    ref: 'table',
+    required: true
   },
 
   total: {
