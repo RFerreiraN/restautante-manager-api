@@ -15,9 +15,33 @@ export class TableController {
     }
   }
 
+  static async updateTableById(req, res) {
+    const results = validatePartialTable(req.body)
+    if (!results.success) {
+      return res.status(400).json({ message: JSON.parse(results.error.message) })
+    }
+
+    const { id } = req.params
+    try {
+      const table = await TableService.updateTableById(id, results.data)
+      return res.status(200).json(table)
+    } catch (error) {
+      return res.status(400).json({ message: error.message })
+    }
+  }
+
   static async getAllTables(req, res) {
     try {
       const tables = await TableService.getAllTables()
+      return res.status(200).json(tables)
+    } catch (error) {
+      return res.status(400).json({ message: error.message })
+    }
+  }
+
+  static async getAvailableTables(req, res) {
+    try {
+      const tables = await TableService.getAvailableTables()
       return res.status(200).json(tables)
     } catch (error) {
       return res.status(400).json({ message: error.message })
