@@ -36,10 +36,10 @@ io.use((socket, next) => {
   try {
     const user = jwt.verify(token, process.env.JWT_ACCESS_SECRET)
     socket.user = user
+    next()
   } catch (error) {
     next(new Error('Token Inválido'))
   }
-  next()
 })
 
 io.on('connection', async (socket) => {

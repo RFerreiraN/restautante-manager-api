@@ -38,7 +38,7 @@ export class OrderService {
 
   static async updateStatus(id, status, role) {
     const order = await OrderRepository.getOrderById(id)
-
+    const states = order.status
     if (!order) {
       throw new Error('Order Not Found')
     }
@@ -50,6 +50,15 @@ export class OrderService {
     if (status === 'cancelled' && role !== 'admin') {
       throw new Error('Not authorized')
     }
+
+    if ((status === 'preparing' || status === 'ready') && role === 'waiter') {
+      throw new Error('Waiter is not authorized')
+    }
+
+    if ((status === 'delivered' || status === 'paid') && role === 'kitchen') {
+      throw new Error('Kitchen is not authorized')
+    }
+
     const orderStatus = await OrderRepository.updateStatus(id, status)
     return orderStatus
   }
