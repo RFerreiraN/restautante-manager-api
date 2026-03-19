@@ -7,7 +7,7 @@ const router = Router()
 
 router.get('/admin', authMiddleware, roleMiddleware(['admin']), OrderController.getAllOrders)
 router.get('/my-orders', authMiddleware, OrderController.getOrdersByUser)
-router.post('/', authMiddleware, OrderController.createOrder)
+router.post('/', authMiddleware, roleMiddleware(['waiter', 'admin']), OrderController.createOrder)
 router.get('/table/:tableId', authMiddleware, OrderController.getOrdersByTable)
 router.get('/:id', authMiddleware, OrderController.getOrderById)
 router.patch('/:id/status', authMiddleware, OrderController.updateStatus)

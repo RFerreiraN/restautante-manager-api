@@ -18,7 +18,8 @@ export class AuthController {
     return res.json({
       user: {
         nombre: user.nombre,
-        email: user.email
+        email: user.email,
+        role: user.role
       }
     })
   }

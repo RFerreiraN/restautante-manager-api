@@ -36,9 +36,43 @@ export class OrderService {
     return order
   }
 
+  static TRANSITIONS = {
+    pending: {
+      preparing: ['kitchen'],
+      cancelled: ['admin']
+    },
+    preparing: {
+      ready: ['kitchen'],
+      cancelled: ['admin']
+    },
+    ready: {
+      delivered: ['waiter']
+    },
+    delivered: {
+      paid: ['waiter']
+    }
+  }
+
+  static validateStatusTransition(currentStatus, nextStatus, role) {
+    const allowedTransitions = this.TRANSITIONS[currentStatus]
+
+    if (!allowedTransitions) {
+      throw new Error('Unknown Status:', currentStatus)
+    }
+
+    const allowedRoles = allowedTransitions[nextStatus]
+
+    if (!allowedRoles) {
+      throw new Error('Allowed Transition')
+    }
+
+    if (!allowedRoles.includes(role)) {
+      throw new Error('Unauthorized rol for transition')
+    }
+  }
+
   static async updateStatus(id, status, role) {
     const order = await OrderRepository.getOrderById(id)
-    const states = order.status
     if (!order) {
       throw new Error('Order Not Found')
     }
@@ -47,17 +81,7 @@ export class OrderService {
       throw new Error('Cant modify Order')
     }
 
-    if (status === 'cancelled' && role !== 'admin') {
-      throw new Error('Not authorized')
-    }
-
-    if ((status === 'preparing' || status === 'ready') && role === 'waiter') {
-      throw new Error('Waiter is not authorized')
-    }
-
-    if ((status === 'delivered' || status === 'paid') && role === 'kitchen') {
-      throw new Error('Kitchen is not authorized')
-    }
+    this.validateStatusTransition(order.status, status, role)
 
     const orderStatus = await OrderRepository.updateStatus(id, status)
     return orderStatus

@@ -3,7 +3,8 @@ import z from 'zod'
 const registerSchema = z.object({
   nombre: z.string().min(2).max(100),
   email: z.string().email(),
-  password: z.string().min(6)
+  password: z.string().min(6),
+  role: z.enum(['admin', 'waiter', 'kitchen'])
 })
 
 export function validateAuthRegister(object) {
