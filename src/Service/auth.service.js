@@ -85,4 +85,29 @@ export class AuthService {
       message: 'Session Closed successfully'
     }
   }
+
+  static async getAllUsers() {
+    const users = await UserRepository.getAllUsers()
+    if (!users) {
+      throw new Error('Users not founds')
+    }
+
+    return users
+  }
+
+  static async updateUser(id, data) {
+    const user = await UserRepository.updateUser(id, data)
+    if (!user) {
+      throw new Error('User Not Found')
+    }
+    return user
+  }
+
+  static async deleteUser(id) {
+    const user = await UserRepository.deleteUser(id)
+    if (!user) {
+      throw new Error('User Not Found')
+    }
+    return user
+  }
 }

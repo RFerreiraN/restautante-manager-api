@@ -4,7 +4,8 @@ const registerSchema = z.object({
   nombre: z.string().min(2).max(100),
   email: z.string().email(),
   password: z.string().min(6),
-  role: z.enum(['admin', 'waiter', 'kitchen'])
+  role: z.enum(['admin', 'waiter', 'kitchen']),
+  isActive: z.boolean().default(true)
 })
 
 export function validateAuthRegister(object) {

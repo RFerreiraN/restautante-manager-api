@@ -20,4 +20,16 @@ export class UserRepository {
   static async findById(id) {
     return await User.findById(id)
   }
+
+  static async getAllUsers() {
+    return await User.find({ isActive: false })
+  }
+
+  static async updateUser(id, data) {
+    return await User.findByIdAndUpdate(id, data, { new: true })
+  }
+
+  static async deleteUser(id) {
+    return await User.findByIdAndUpdate(id, { isActive: false }, { new: true })
+  }
 }
