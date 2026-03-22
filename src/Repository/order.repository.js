@@ -50,4 +50,8 @@ export class OrderRepository {
       .populate('table', 'number')
       .populate('items.product', 'nombre')
   }
+
+  static async getActiveOrdersByTable(tableId) {
+    return Order.find({ table: tableId, status: { $nin: ['paid', 'cancelled'] } })
+  }
 }

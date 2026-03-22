@@ -67,6 +67,16 @@ export class OrderController {
     }
   }
 
+  static async getActiveOrdersByTable(req, res) {
+    const { tableId } = req.params
+    try {
+      const orders = await OrderService.getActiveOrdersByTable(tableId)
+      return res.status(200).json(orders)
+    } catch (error) {
+      return res.status(400).json({ message: error.message })
+    }
+  }
+
   static async getOrdersByUser(req, res) {
     const { id } = req.user
     try {

@@ -95,6 +95,14 @@ export class OrderService {
     return ordersByTable
   }
 
+  static async getActiveOrdersByTable(tableId) {
+    if (!tableId) {
+      throw new Error('Invalid Id')
+    }
+    const orders = await OrderRepository.getActiveOrdersByTable(tableId)
+    return orders
+  }
+
   static async getOrdersByUser(userId) {
     const ordersByUser = await OrderRepository.getOrdersByUser(userId)
     return ordersByUser
