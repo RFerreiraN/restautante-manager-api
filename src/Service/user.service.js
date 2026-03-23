@@ -1,3 +1,4 @@
+import { User } from '../Models/user.model.js'
 import { UserRepository } from '../Repository/user.repository.js'
 
 export class UserService {
@@ -19,14 +20,10 @@ export class UserService {
     }
   }
 
-  static async deleteUser(id) {
-    const user = await UserRepository.deleteUser(id)
+  static async getUserById(id) {
+    const user = await UserRepository.getUserById(id)
     if (!user) {
-      throw new Error('User Not Found')
-    }
-
-    if (user.isActive === false) {
-      throw new Error('User already delete')
+      throw new Error('User not found')
     }
 
     return {
@@ -34,6 +31,26 @@ export class UserService {
       email: user.email,
       role: user.role,
       isActive: user.isActive
+    }
+  }
+
+  static async deleteUser(id) {
+    const user = await UserRepository.getUserById(id)
+    if (!user) {
+      throw new Error('User Not Found')
+    }
+
+    if (user.isActive === false) {
+      throw new Error('User already deleted')
+    }
+
+    const deleteUser = await UserRepository.deleteUser(user.id)
+
+    return {
+      nombre: deleteUser.nombre,
+      email: deleteUser.email,
+      role: deleteUser.role,
+      isActive: deleteUser.isActive
     }
   }
 }

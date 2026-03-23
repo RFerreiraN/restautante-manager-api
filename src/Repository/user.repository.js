@@ -12,4 +12,8 @@ export class UserRepository {
   static async deleteUser(id) {
     return await User.findByIdAndUpdate(id, { isActive: false }, { new: true })
   }
+
+  static async getUserById(id) {
+    return await User.findById(id)
+  }
 }
