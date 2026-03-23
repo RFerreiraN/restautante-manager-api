@@ -1,14 +1,14 @@
-import { UserRepository } from '../Repository/user.repository.js'
+import { AuthRepository } from '../Repository/auth.repository.js'
 import jwt from 'jsonwebtoken'
 import { comparePassword } from '../utils/hash.js'
 
 export class AuthService {
   static async registerUser(data) {
-    const existingUser = await UserRepository.findByEmail(data.email)
+    const existingUser = await AuthRepository.findByEmail(data.email)
     if (existingUser) {
       throw new Error('Email ready exists')
     }
-    const user = await UserRepository.register(data)
+    const user = await AuthRepository.register(data)
 
     return {
       user: {
@@ -21,7 +21,7 @@ export class AuthService {
   }
 
   static async loginUser(email, password) {
-    const user = await UserRepository.findByEmail(email)
+    const user = await AuthRepository.findByEmail(email)
     if (!user) {
       throw new Error('Email or Password Invalid')
     }
@@ -43,7 +43,7 @@ export class AuthService {
       { expiresIn: '7d' }
     )
 
-    await UserRepository.findAndUpdateRefreshToken(user._id, refreshToken)
+    await AuthRepository.findAndUpdateRefreshToken(user._id, refreshToken)
     return {
       user: {
         id: user._id,
@@ -59,7 +59,7 @@ export class AuthService {
   static async refreshUserSession(refreshToken) {
     const decoded = jwt.verify(refreshToken, process.env.JWT_REFRESH_SECRET)
 
-    const user = await UserRepository.findByToken(refreshToken)
+    const user = await AuthRepository.findByToken(refreshToken)
     if (!user) {
       throw new Error('Token Invalid')
     }
@@ -73,41 +73,16 @@ export class AuthService {
   }
 
   static async logoutUser(id) {
-    const user = await UserRepository.findById(id)
+    const user = await AuthRepository.findById(id)
     if (!user) {
       throw new Error('User not exists')
     }
 
-    await UserRepository.findAndUpdateRefreshToken(user._id, null)
+    await AuthRepository.findAndUpdateRefreshToken(user._id, null)
 
     return {
       success: true,
       message: 'Session Closed successfully'
     }
-  }
-
-  static async getAllUsers() {
-    const users = await UserRepository.getAllUsers()
-    if (!users) {
-      throw new Error('Users not founds')
-    }
-
-    return users
-  }
-
-  static async updateUser(id, data) {
-    const user = await UserRepository.updateUser(id, data)
-    if (!user) {
-      throw new Error('User Not Found')
-    }
-    return user
-  }
-
-  static async deleteUser(id) {
-    const user = await UserRepository.deleteUser(id)
-    if (!user) {
-      throw new Error('User Not Found')
-    }
-    return user
   }
 }

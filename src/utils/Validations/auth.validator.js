@@ -12,6 +12,10 @@ export function validateAuthRegister(object) {
   return registerSchema.safeParse(object)
 }
 
+export function validatePartialUser(object) {
+  return registerSchema.partial().safeParse(object)
+}
+
 const loginSchema = z.object({
   email: z.string().email(),
   password: z.string().min(6)

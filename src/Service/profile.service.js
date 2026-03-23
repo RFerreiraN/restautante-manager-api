@@ -1,8 +1,8 @@
-import { UserRepository } from '../Repository/user.repository.js'
+import { AuthRepository } from '../Repository/auth.repository.js'
 
 export class ProfileService {
   static async getProfile(userId) {
-    const user = await UserRepository.findById(userId)
+    const user = await AuthRepository.findById(userId)
     if (!user) {
       throw new Error('User does not exists')
     }
