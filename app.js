@@ -11,6 +11,7 @@ import profileRoutes from './src/Routes/profile.routes.js'
 import productsRoutes from './src/Routes/product.routes.js'
 import ordersRoutes from './src/Routes/order.routes.js'
 import tablesRoutes from './src/Routes/table.routes.js'
+import usersRoutes from './src/Routes/user.routes.js'
 import jwt from 'jsonwebtoken'
 
 configDotenv()
@@ -64,6 +65,7 @@ app.use('/profile', profileRoutes)
 app.use('/products', productsRoutes)
 app.use('/orders', ordersRoutes)
 app.use('/tables', tablesRoutes)
+app.use('/users', usersRoutes)
 
 server.listen(PORT, () => {
   console.log(`Server Listening on port: http://localhost:${PORT}`)
