@@ -19,7 +19,8 @@ export class AuthController {
       user: {
         nombre: user.nombre,
         email: user.email,
-        role: user.role
+        role: user.role,
+        isActive: user.isActive
       }
     })
   }

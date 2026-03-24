@@ -2,7 +2,7 @@ import { User } from '../Models/user.model.js'
 
 export class UserRepository {
   static async getAllUsers() {
-    return await User.find({ isActive: true })
+    return await User.find()
   }
 
   static async updateUser(id, data) {
