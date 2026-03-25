@@ -44,10 +44,25 @@ io.use((socket, next) => {
 })
 
 io.on('connection', async (socket) => {
-  console.log('Conectado', socket.user.id)
+  console.log('Connected', socket.user.id)
+
+  socket.on('joinTable', (tableId) => {
+    const roomName = `table_${tableId}`
+    socket.join(roomName)
+
+    console.log(`User ${socket.user.id} united to ${roomName}`)
+    console.log('Rooms sockets:', socket.rooms)
+  })
+
+  socket.on('createOrder', (orderData) => {
+    const roomName = `table_${orderData.tableId}`
+
+    io.to(roomName).emit('orderCreated', orderData)
+    console.log(`Order sent to room ${roomName}`)
+  })
 
   socket.on('disconnect', () => {
-    console.log('Desconectado')
+    console.log('Disconnect')
   })
 })
 
