@@ -1,6 +1,6 @@
 import { io } from 'socket.io-client'
 
-const token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY5YzMwNDFjZjNjYjJmNmZkYjViNTQzNiIsImlhdCI6MTc3NDQ3NTI0MiwiZXhwIjoxNzc0NDc2MTQyfQ.Iqg65rq95nbAc4DNqRHXhQsyc7AQYd-ngGD0ur5X8jI"
+const token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY5YzMwNDFjZjNjYjJmNmZkYjViNTQzNiIsImlhdCI6MTc3NDQ3Njk4NSwiZXhwIjoxNzc0NDc3ODg1fQ.sdWyPBeYY1b1gBkvgXLuFqOr-ByB0I_uk5CYYfySHR0'
 
 const socket = io('http://localhost:3000', {
   auth: { token }
@@ -12,10 +12,18 @@ socket.on('connect', () => {
   const tableId = 123
   socket.emit('joinTable', tableId)
 
-  socket.on('orderCreated', (orderData) => {
-    console.log('new Order', orderData)
-  })
+  const testOrder = {
+    tableId,
+    products: [{ name: 'Pizza', qty: 2 }],
+    total: 20,
+    status: 'pending'
+  }
+  socket.emit('createOrder', testOrder)
 })
+
+// socket.on('orderCreated', (orderData) => {
+//   console.log('New order', orderData)
+// })
 
 socket.on('disconnect', () => {
   console.log('disconnect')
