@@ -21,49 +21,54 @@ const app = express()
 await connectDb()
 const server = createServer(app)
 export const io = new Server(server, {
-  connectionStateRecovery: true,
+  // connectionStateRecovery: true,
   cors: {
-    origin: 'http://localhost:4200',
-    methods: ['GET', 'POST']
+    origin: '*'
   }
 })
 
-io.use((socket, next) => {
-  const token = socket.handshake.auth.token
-  if (!token) {
-    return next(new Error('User not authorized'))
-  }
+// io.use((socket, next) => {
+//   console.log('🔥 Middleware ejecutándose')
 
-  try {
-    const user = jwt.verify(token, process.env.JWT_ACCESS_SECRET)
-    socket.user = user
-    next()
-  } catch (error) {
-    next(new Error('Token Inválido'))
-  }
-})
+//   const token = socket.handshake.auth.token
+//   console.log('TOKEN RECIBIDO:', token)
+//   try {
+//     const token = socket.handshake.auth.token
+
+//     if (!token) {
+//       return next(new Error('User not authorized'))
+//     }
+
+//     const user = jwt.verify(token, process.env.JWT_ACCESS_SECRET)
+
+//     socket.user = user
+
+//     next()
+//   } catch (error) {
+//     next(new Error('Invalid Token'))
+//   }
+// })
 
 io.on('connection', async (socket) => {
-  console.log('Connected', socket.user.id)
+  console.log('Connected', socket.id)
 
-  socket.on('joinTable', (tableId) => {
-    const roomName = `table_${tableId}`
-    socket.join(roomName)
+  socket.on('message', (data) => {
+    console.log('Message recived', data)
 
-    console.log(`User ${socket.user.id} united to ${roomName}`)
-    console.log('Rooms sockets:', socket.rooms)
-  })
-
-  socket.on('createOrder', (orderData) => {
-    const roomName = `table_${orderData.tableId}`
-
-    io.to(roomName).emit('orderCreated', orderData)
-    console.log(`Order sent to room ${roomName}`)
+    socket.emit('answer', 'Hola')
   })
 
   socket.on('disconnect', () => {
     console.log('Disconnect')
   })
+})
+
+io.engine.on('connection_error', (err) => {
+  console.log('ENGINE ERROR:', err)
+})
+
+io.engine.on('upgradeError', (err) => {
+  console.log('UPGRADE ERROR:', err)
 })
 
 app.use(logger('dev'))

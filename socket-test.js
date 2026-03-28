@@ -1,30 +1,21 @@
 import { io } from 'socket.io-client'
 
-const token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY5YzMwNDFjZjNjYjJmNmZkYjViNTQzNiIsImlhdCI6MTc3NDQ3Njk4NSwiZXhwIjoxNzc0NDc3ODg1fQ.sdWyPBeYY1b1gBkvgXLuFqOr-ByB0I_uk5CYYfySHR0'
+const token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY5YzMwNDFjZjNjYjJmNmZkYjViNTQzNiIsImlhdCI6MTc3NDczNTg4MywiZXhwIjoxNzc0NzM2NzgzfQ.K_12ys2pY_QYuyIXHRU5xePNn4y9V53RMEiywj6IS_o'
 
 const socket = io('http://localhost:3000', {
-  auth: { token }
+  transports: ['websocket']
 })
 
 socket.on('connect', () => {
-  console.log('Conectado al servidor', socket.id)
+  console.log('Connected')
 
-  const tableId = 123
-  socket.emit('joinTable', tableId)
-
-  const testOrder = {
-    tableId,
-    products: [{ name: 'Pizza', qty: 2 }],
-    total: 20,
-    status: 'pending'
-  }
-  socket.emit('createOrder', testOrder)
+  socket.emit('message', 'Hola server')
 })
 
-// socket.on('orderCreated', (orderData) => {
-//   console.log('New order', orderData)
-// })
+socket.on('answer', (data) => {
+  console.log('Answer from client', data)
+})
 
-socket.on('disconnect', () => {
-  console.log('disconnect')
+socket.on('connect_error', (err) => {
+  console.log('Error de conexión:', err.message)
 })
