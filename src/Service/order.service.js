@@ -1,6 +1,6 @@
-import { Order } from '../Models/order.model.js'
 import { OrderRepository } from '../Repository/order.repository.js'
 import { ProductRepository } from '../Repository/product.repository.js'
+import { io } from '../../app.js'
 
 export class OrderService {
   static async createOrder(data) {
@@ -20,7 +20,12 @@ export class OrderService {
       totalCalculate += product.price * item.quantity
     }
     data.total = totalCalculate
-    return await OrderRepository.createOrder(data)
+    const newOrder = await OrderRepository.createOrder(data)
+
+    console.log('Send to kitchen:', newOrder)
+    io.to('kitchen').to('admin').emit('order:new', newOrder)
+
+    return newOrder
   }
 
   static async getAllOrders() {
@@ -84,6 +89,15 @@ export class OrderService {
     this.validateStatusTransition(order.status, status, role)
 
     const orderStatus = await OrderRepository.updateStatus(id, status)
+
+    if (status === 'preparing') {
+      io.to('waiter').to('admin').emit('order:preparing', orderStatus)
+    }
+
+    if (status === 'ready') {
+      io.to('waiter').to('admin').emit('order:ready', orderStatus)
+    }
+
     return orderStatus
   }
 

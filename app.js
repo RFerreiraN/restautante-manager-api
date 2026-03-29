@@ -13,6 +13,7 @@ import ordersRoutes from './src/Routes/order.routes.js'
 import tablesRoutes from './src/Routes/table.routes.js'
 import usersRoutes from './src/Routes/user.routes.js'
 import jwt from 'jsonwebtoken'
+import { UserRepository } from './src/Repository/user.repository.js'
 
 configDotenv()
 
@@ -21,54 +22,46 @@ const app = express()
 await connectDb()
 const server = createServer(app)
 export const io = new Server(server, {
-  // connectionStateRecovery: true,
+  connectionStateRecovery: true,
   cors: {
-    origin: '*'
+    origin: 'http://localhost:4200',
+    methods: ['GET', 'POST']
   }
 })
 
-// io.use((socket, next) => {
-//   console.log('🔥 Middleware ejecutándose')
+//  middleware de identificación para Socket.IO
 
-//   const token = socket.handshake.auth.token
-//   console.log('TOKEN RECIBIDO:', token)
-//   try {
-//     const token = socket.handshake.auth.token
+io.use(async (socket, next) => {
+  const token = socket.handshake.auth.token || socket.handshake.query.token
+  if (!token) {
+    return next(new Error('Access denied: Token not validate or not exsist'))
+  }
 
-//     if (!token) {
-//       return next(new Error('User not authorized'))
-//     }
+  try {
+    const decoded = jwt.verify(token, process.env.JWT_ACCESS_SECRET)
 
-//     const user = jwt.verify(token, process.env.JWT_ACCESS_SECRET)
+    const user = await UserRepository.getUserById(decoded.id)
+    if (!user) {
+      return next(new Error('User not Found'))
+    }
 
-//     socket.user = user
+    socket.user = { id: user._id, role: user.role, nombre: user.nombre }
+    next()
+  } catch (error) {
+    next(new Error('Invalid or expired Token'))
+  }
+})
 
-//     next()
-//   } catch (error) {
-//     next(new Error('Invalid Token'))
-//   }
-// })
+io.on('connection', (socket) => {
+  const { nombre, role } = socket.user
+  console.log(`User connected: ${nombre} with role: ${role}`)
 
-io.on('connection', async (socket) => {
-  console.log('Connected', socket.id)
-
-  socket.on('message', (data) => {
-    console.log('Message recived', data)
-
-    socket.emit('answer', 'Hola')
-  })
+  socket.join(role)
+  console.log(`Socket ${socket.id} united to room ${role}`)
 
   socket.on('disconnect', () => {
-    console.log('Disconnect')
+    console.log(`User: ${nombre} is disconnect or logout`)
   })
-})
-
-io.engine.on('connection_error', (err) => {
-  console.log('ENGINE ERROR:', err)
-})
-
-io.engine.on('upgradeError', (err) => {
-  console.log('UPGRADE ERROR:', err)
 })
 
 app.use(logger('dev'))
