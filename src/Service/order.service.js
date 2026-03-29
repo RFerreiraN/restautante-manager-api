@@ -98,6 +98,18 @@ export class OrderService {
       io.to('waiter').to('admin').emit('order:ready', orderStatus)
     }
 
+    if (status === 'delivered') {
+      io.to('admin').emit('order:delivered', orderStatus)
+    }
+
+    if (status === 'paid') {
+      io.emit('table:update', { tableId: orderStatus.table, status: 'free' })
+    }
+
+    if (status === 'cancelled') {
+      io.emit('order:cancelled', orderStatus)
+    }
+
     return orderStatus
   }
 
