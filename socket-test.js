@@ -8,8 +8,8 @@ socket.on('connect', () => {
   console.log('✅ Connected:', socket.id)
 })
 
-socket.on('order:preparing', (data) => {
-  console.log('🔥 EVENT RECEIVED:', data)
+socket.on('order:new', (data) => {
+  console.log('🔥 NEW ORDER:', data)
 })
 
 socket.on('connect_error', (err) => {

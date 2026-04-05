@@ -1,6 +1,6 @@
 import { OrderRepository } from '../Repository/order.repository.js'
 import { ProductRepository } from '../Repository/product.repository.js'
-import { io } from '../../app.js'
+import { getSocketInstance } from '../Sockets/socket.js'
 
 export class OrderService {
   static async createOrder(data) {
@@ -21,6 +21,8 @@ export class OrderService {
     }
     data.total = totalCalculate
     const newOrder = await OrderRepository.createOrder(data)
+
+    const io = getSocketInstance()
 
     console.log('Send to kitchen:', newOrder)
     io.to('kitchen').to('admin').emit('order:new', newOrder)
