@@ -14,6 +14,7 @@ import tablesRoutes from './src/Routes/table.routes.js'
 import usersRoutes from './src/Routes/user.routes.js'
 import jwt from 'jsonwebtoken'
 import { UserRepository } from './src/Repository/user.repository.js'
+import { setSocketInstance } from './src/Sockets/socket.js'
 
 configDotenv()
 
@@ -21,17 +22,26 @@ const PORT = process.env.PORT ?? 3000
 const app = express()
 await connectDb()
 const server = createServer(app)
-export const io = new Server(server, {
+const io = new Server(server, {
   connectionStateRecovery: true,
   cors: {
     origin: 'http://localhost:4200',
-    methods: ['GET', 'POST']
+    methods: ['GET', 'POST', 'PATCH', 'DELETE']
   }
 })
+setSocketInstance(io)
 
 //  middleware de identificación para Socket.IO
 
 io.use(async (socket, next) => {
+  if (process.env.NODE_ENV !== 'production') {
+    socket.user = {
+      id: 'test',
+      role: 'admin',
+      nombre: 'TestUser'
+    }
+    return next()
+  }
   const token = socket.handshake.auth.token || socket.handshake.query.token
   if (!token) {
     return next(new Error('Access denied: Token not validate or not exsist'))
